@@ -1,0 +1,83 @@
+@model IEnumerable<lunchPollNet.Models.Poll>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles
+{
+<style>
+
+</style>
+}
+
+<h2>Polls</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div style='text-align: right'>
+    <form asp-controller="Polls" asp-action="Index" method="GET">
+        <small>Past Polls</small>
+        <input type="checkbox" name="showPastPolls" data-size='small' 
+            data-on-text='&nbsp;&nbsp;' data-off-text='&nbsp;&nbsp;' checked="@ViewData["ShowPastPolls"]" value="true">
+        <input type="hidden" name="showPastPolls" value="false">
+    </form>
+
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClosingTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr class='clickable-row' data-href='./PollItems'>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClosingTime)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        // Adds clickability to table rows
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+
+        // Initialize bootstrap switch on togglebutton
+        $("input[name='showPastPolls'][type='checkbox']").bootstrapSwitch();
+
+        // Submit for when switch is changed
+        $('input[name="showPastPolls"]').on('switchChange.bootstrapSwitch', 
+            function(event, state) {
+                $('form').submit();
+            }
+        );
+
+    </script>
+}
